@@ -1,0 +1,5 @@
+# ignore the dist folder
+dist
+
+# ignore node_modules
+node_modules
