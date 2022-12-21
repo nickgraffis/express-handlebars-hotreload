@@ -1,11 +1,12 @@
-const { hotreload, engine } = require('../dist');
+const { engine } = require('../dist');
 const express = require('express');
-hotreload()
 
 const app = express();
 
 app.engine('handlebars', engine({
-  hotreload: true,
+  hotreload: {
+    port: 8087,
+  },
 }));
 app.set('view engine', 'handlebars');
 app.set('views', process.cwd() + '/example/views');

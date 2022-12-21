@@ -3,6 +3,9 @@
   "version": "0.0.5",
   "description": "🔥 Express/Handlebars Hot Reload",
   "main": "dist/index.js",
+  "bin": {
+    "hotreload": "dist/bin/hotreload.js"
+  },
   "types": "dist/index.d.ts",
   "author": "Nick Graffis <hi@nickgraffis.me>",
   "license": "MIT",
@@ -41,6 +44,7 @@
   },
   "scripts": {
     "pub": "npm run build && npm publish --access public",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "node dist/bin.js \"node --watch example/server.js\" --port 8087"
   }
 }

@@ -11,10 +11,9 @@ npm install express-handlebars-hotreload
 ## Usage
 
 ```js
+// index.js or server.js
 const { hotreload, engine } = require('express-handlebars-hotreload');
 const express = require('express');
-
-if (process.env.NODE_ENV !== 'production') hotreload();
 
 const app = express();
 
@@ -31,16 +30,43 @@ app.get('/', (req, res) => {
 app.listen(4200);
 ```
 
+```json
+// package.json
+{
+  "scripts": {
+    "start": "node index.js",
+    "dev": "hotrelader \"nodemon index.js\""
+  }
+}
+```
+
 ## Options
 
 If you want to specifiy the websocket port, you can pass an object to the `hotreload` function and the `engine` function.
 
 ### `hotreload`
-```js
-hotreload({
-  port: number /** Websocket port - default is 8080 */
-})
+```json
+{
+  "scripts": {
+    "dev": "hotrelader \"nodemon index.js\" --port 8085"
+  }
+}
 ```
+
+_The default port is 8080_
+
+You can also specify the glob pattern to watch for changes.
+
+```json
+{
+  "scripts": {
+    "dev": "hotrelader \"nodemon index.js\" --pattern \"./views/**/*.hbs\""
+  }
+}
+```
+
+_The default pattern is `./**/*`_
+
 
 ### `engine`
 ```js
@@ -54,21 +80,6 @@ engine({
     port: number /** Websocket port - default is 8080 */
   }
 })
-```
-
-`hotreload` will actually return the `port` that it is using, so you can use that to pass to the `engine` function.
-
-```js
-let port;
-if (process.env.NODE_ENV !== 'production') port = hotreload();
-
-app.engine('handlebars', engine({
-  ...(process.env.NODE_ENV !== 'production') && {
-    hotreload: {
-      port
-    }
-  },
-}));
 ```
 
 ## Handlebars
