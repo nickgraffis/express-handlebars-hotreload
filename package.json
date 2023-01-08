@@ -30,6 +30,7 @@
     "@types/glob": "^8.0.0",
     "@types/node": "^18.11.17",
     "@types/ws": "^8.5.3",
+    "dotenv": "^16.0.3",
     "esbuild": "^0.16.10",
     "express": "^4.18.2",
     "expresss": "^0.0.0",
@@ -39,8 +40,8 @@
   },
   "dependencies": {
     "chokidar": "^3.5.3",
-    "ws": "^8.11.0",
-    "glob": "^8.0.3"
+    "glob": "^8.0.3",
+    "ws": "^8.11.0"
   },
   "scripts": {
     "pub": "npm run build && npm publish --access public",

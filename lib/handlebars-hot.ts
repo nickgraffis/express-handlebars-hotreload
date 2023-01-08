@@ -211,29 +211,6 @@ export default class ExpressHandlebars {
 			partials,
 		});
 
-		if (this.config.hotreload) {
-			html += `
-				<script>
-					(() => {
-						// client.ts
-						var ws = new WebSocket("ws://localhost:${typeof this.config.hotreload === 'object' ? this.config.hotreload?.port : 8080}");
-						ws.addEventListener("open", () => {
-							console.log("\u{1F525} Listening for updates...");
-						});
-						ws.addEventListener("message", function(event) {
-							if (event.data === "refresh") {
-								console.log("\u{1F525} Refreshing the page...");
-								window.location.reload();
-							}
-						});
-						ws.addEventListener("close", () => {
-							console.log("\u{1F525} Connection closed");
-						});
-					})();
-				</script>			
-			`;
-		}
-
 		return html;
 	}
 
@@ -304,6 +281,31 @@ export default class ExpressHandlebars {
 					{ ...renderOptions, layout: undefined },
 				);
 			}
+
+			if (this.config.hotreload) {
+				html += `
+					<script>
+						(() => {
+							// client.ts
+							var ws = new WebSocket("ws://localhost:${typeof this.config.hotreload === 'object' ? this.config.hotreload?.port : 8080}");
+							ws.addEventListener("open", () => {
+								console.log("\u{1F525} Listening for updates...");
+							});
+							ws.addEventListener("message", function(event) {
+								console.log("\u{1F525} Received message:", event.data);
+								if (event.data === "refresh") {
+									console.log("\u{1F525} Refreshing the page...");
+									window.location.reload();
+								}
+							});
+							ws.addEventListener("close", () => {
+								console.log("\u{1F525} Connection closed");
+							});
+						})();
+					</script>			
+				`;
+			}
+			
 			callback(null, html);
 		} catch (err) {
 			callback(err);

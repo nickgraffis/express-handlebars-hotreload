@@ -1,3 +1,4 @@
+import * as dotenv from "dotenv";
 import { WebSocketServer } from "ws";
 import * as glob from "glob";
 import * as fs from "fs";
@@ -5,7 +6,19 @@ import * as chokidar from "chokidar";
 import { spawn } from "child_process";
 import { engine, create } from "./lib";
 export { engine, create };
+dotenv.config();
+const { DEV } = process.env;
 
+let timeout;
+let wait = false;
+const refresh = (ws) => {
+  console.log(`🔥 File changed, refreshing`);
+  ws.send("refresh", (err) => { 
+    if (err) {
+      if (DEV) console.log(err)
+    }
+  });
+}
 const DEFAULT_GLOB = "**/*"
 
 export function __hotreload({
@@ -13,7 +26,7 @@ export function __hotreload({
   _glob = DEFAULT_GLOB,
 }) {
   // Creating a new websocket server
-  const wss = new WebSocketServer({ port })
+  let wss = new WebSocketServer({ port })
   // Creating connection using websocket
   wss.on("connection", ws => {
     // listen for changes in a glob of files and send a message to the client
@@ -24,12 +37,15 @@ export function __hotreload({
       watcher.add(file);
     });
     watcher.on("change", (path) => {
-      console.log(`🔥 File ${path} has been changed`);
-      ws.send("refresh");
+      if (DEV) console.log("refreshing")
+      refresh(ws);
     })
+    ws.onclose = function () {
+      if (DEV) console.log("Client disconnected")
+    }
     // handling client connection error
     ws.onerror = function () {
-      console.log("Some Error occurred")
+      if (DEV) console.log("Some Error occurred")
     }
   });
 
