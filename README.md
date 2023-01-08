@@ -7,38 +7,50 @@
 ```bash
 npm install express-handlebars-hotreload
 ```
-
 ## Usage
+A simple example:
 
 ```js
-const { hotreload, engine } = require('express-handlebars-hotreload');
+const exphbs = require('express-handlebars-hotreload');
 const express = require('express');
-
-if (process.env.NODE_ENV !== 'production') hotreload();
+exphbs.hotreload()
 
 const app = express();
-
-app.engine('handlebars', engine({
-  hotreload: process.env.NODE_ENV !== 'production',
-}));
+const hbs = exphbs.create({
+  hotreload: true,
+})
+app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
-app.set('views', './views');
+app.set('views', process.cwd() + '/example/views');
 
 app.get('/', (req, res) => {
     res.render('home');
 });
 
-app.listen(4200);
+app.listen(4241);
 ```
 
 ## Options
 
-If you want to specifiy the websocket port, you can pass an object to the `hotreload` function and the `engine` function.
+If you want to specifiy the websocket port, you can pass an object to the `hotreload` function and the `engine` function or the `create` method.
 
 ### `hotreload`
 ```js
 hotreload({
   port: number /** Websocket port - default is 8080 */
+})
+
+// and 
+exphbs.create({
+  hotreload: true,
+  port: number /** Websocket port - default is 8080 */
+})
+
+// or 
+engine({
+  hotreload: {
+    port: number /** Websocket port - default is 8080 */
+  }
 })
 ```
 
@@ -74,3 +86,6 @@ app.engine('handlebars', engine({
 ## Handlebars
 
 The handlebars engine is the same as the [express-handlebars](https://github.com/ericf/express-handlebars) engine.
+
+## Thanks
+:heart: [express-handlebars](https://github.com/ericf/express-handlebars)

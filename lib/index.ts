@@ -19,3 +19,8 @@ export function create (config: ConfigOptions = {}): ExpressHandlebars {
 export function engine (config: ConfigOptions = {}): Engine {
 	return create(config).engine;
 }
+
+export default {
+	create,
+	engine,
+}
